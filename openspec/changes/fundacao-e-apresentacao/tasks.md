@@ -3,7 +3,7 @@
 ## 1. Scaffold e dependências
 
 - [ ] 1.1 Gerar o workspace em `.scaffold` com `ng new batalha-naval --directory .scaffold --skip-git --style tailwind --zoneless --test-runner vitest --routing=false --ssr=false` e verificar que `package.json`, `angular.json` e `src/` foram criados
-- [ ] 1.2 Mover todo o conteúdo de `.scaffold` (incluindo arquivos ocultos) para a raiz, preservando `README.md`, `AGENTS.md`, `openspec/` e `.opencode/`, e verificar que esses arquivos permanecem inalterados e `.scaffold` foi removido
+- [ ] 1.2 Mover todo o conteúdo de `.scaffold` (incluindo arquivos ocultos) para a raiz, preservando `README.md`, `AGENTS.md`, `openspec/` e `.opencode/`, e verificar que esses arquivos permanecem inalterados e `.scaffold` foi removido.
 - [ ] 1.3 Conciliar o `.gitignore` gerado com o existente, sem remover entradas já presentes, e verificar que `node_modules`, `dist` e `.angular/cache` continuam ignorados
 - [ ] 1.4 Instalar `@lucide/angular` e verificar com `npm ls @lucide/angular` que a dependência está resolvida
 - [ ] 1.5 Confirmar a configuração zoneless e o Vitest nos arquivos gerados (`app.config.ts` e configuração de testes) e verificar que `npm test` executa a suíte inicial
