@@ -61,7 +61,7 @@
       <ul class="mt-3 divide-y divide-oceano-700/70">
         @for (embarcacao of frota; track embarcacao.nome) {
           <li class="flex items-center justify-between gap-4 py-2.5 text-sm">
-            <span class="text-espuma-100/80">{{ embarcacao.nome }}</span>
+            <span class="text-espuma-100/80">{{ embarcacao.rotulo }}</span>
             <span class="shrink-0 rounded-md bg-oceano-800 px-2 py-0.5 text-xs font-medium text-agua-400">
               {{ embarcacao.tamanho }} posições
             </span>

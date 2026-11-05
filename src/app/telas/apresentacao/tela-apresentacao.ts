@@ -6,19 +6,7 @@ import {
   LucideShip,
 } from '@lucide/angular';
 import { PartidaStore } from '../../estado/partida-store';
-
-interface EmbarcacaoApresentacao {
-  nome: string;
-  tamanho: number;
-}
-
-const FROTA_APRESENTACAO: readonly EmbarcacaoApresentacao[] = [
-  { nome: 'Porta-aviões', tamanho: 5 },
-  { nome: 'Encouraçado', tamanho: 4 },
-  { nome: 'Cruzador', tamanho: 3 },
-  { nome: 'Submarino', tamanho: 3 },
-  { nome: 'Destroyer', tamanho: 2 },
-];
+import { FROTA_PADRAO } from '../../dominio/frota';
 
 @Component({
   imports: [LucideAnchor, LucideArrowRight, LucideCrosshair, LucideShip],
@@ -28,7 +16,7 @@ const FROTA_APRESENTACAO: readonly EmbarcacaoApresentacao[] = [
 export class TelaApresentacao {
   private readonly partida = inject(PartidaStore);
 
-  protected readonly frota = FROTA_APRESENTACAO;
+  protected readonly frota = FROTA_PADRAO;
 
   protected iniciarPartida(): void {
     this.partida.iniciarPartida();
