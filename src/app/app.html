@@ -1,0 +1,20 @@
+<div class="flex min-h-dvh flex-col bg-oceano-950 text-espuma-100">
+  <main
+    class="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-4 py-8 sm:px-6 lg:px-8"
+  >
+    @switch (partida.fase()) {
+      @case ('apresentacao') {
+        <app-tela-apresentacao />
+      }
+      @case ('preparacao') {
+        <app-tela-preparacao />
+      }
+      @case ('batalha') {
+        <app-tela-batalha />
+      }
+      @case ('encerrada') {
+        <app-tela-encerramento />
+      }
+    }
+  </main>
+</div>
