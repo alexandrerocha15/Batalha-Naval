@@ -1,7 +1,64 @@
-<section class="space-y-4">
-  <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Etapa 1 de 2</p>
-  <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Prepare sua frota</h1>
-  <p class="max-w-xl text-base text-espuma-100/80">
-    Em breve você poderá posicionar suas embarcações neste tabuleiro.
-  </p>
+<section class="space-y-6" aria-labelledby="titulo-preparacao">
+  <header class="space-y-2">
+    <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Etapa 1 de 2</p>
+    <h1 id="titulo-preparacao" class="text-3xl font-semibold tracking-tight sm:text-4xl">Prepare sua frota</h1>
+    <p class="max-w-xl text-base text-espuma-100/80">Selecione uma embarcação e escolha uma célula para posicioná-la.</p>
+  </header>
+
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+    <div class="min-w-0">
+      <div class="grid aspect-square w-full max-w-xl grid-cols-10 gap-1" role="group" aria-label="Tabuleiro de posicionamento, linhas A a J e colunas 1 a 10">
+        @for (linha of linhas; track linha) {
+          @for (coluna of colunas; track coluna) {
+            @let avaliacao = avaliacaoAtual();
+            <button type="button" class="flex min-h-0 min-w-0 items-center justify-center rounded-sm border text-[10px] sm:text-sm focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-agua-300"
+              [attr.aria-label]="'Linha ' + (linha + 1) + ', coluna ' + (coluna + 1) + (embarcacaoNaCelula(linha, coluna) ? ', ' + embarcacaoNaCelula(linha, coluna) : '')"
+              [attr.title]="embarcacaoNaCelula(linha, coluna) || ('Linha ' + (linha + 1) + ', coluna ' + (coluna + 1))"
+              [class.bg-agua-500]="!!embarcacaoNaCelula(linha, coluna)"
+              [class.border-agua-200]="!!embarcacaoNaCelula(linha, coluna)"
+              [class.bg-emerald-500/70]="previaNaCelula(linha, coluna) && avaliacao?.valido"
+              [class.bg-red-500/70]="previaNaCelula(linha, coluna) && avaliacao && !avaliacao.valido"
+              [class.border-espuma-100/20]="!embarcacaoNaCelula(linha, coluna)"
+              [class.bg-oceano-900]="!embarcacaoNaCelula(linha, coluna) && !previaNaCelula(linha, coluna)"
+              (focus)="apontar(linha, coluna)" (mouseenter)="apontar(linha, coluna)" (click)="confirmar(linha, coluna)">
+              {{ rotuloLinha(linha) }}{{ coluna + 1 }}
+            </button>
+          }
+        }
+      </div>
+      <p class="mt-2 min-h-6 text-sm text-red-300" aria-live="polite">{{ motivoInvalido() }}</p>
+    </div>
+
+    <aside class="space-y-5">
+      <section class="space-y-3" aria-labelledby="titulo-frota">
+        <h2 id="titulo-frota" class="text-lg font-semibold">Sua frota</h2>
+        <ul class="space-y-2">
+          @for (modelo of partida.modelos; track modelo.nome) {
+            <li class="flex items-center gap-2">
+              <button type="button" class="min-w-0 flex-1 rounded border px-3 py-2 text-left text-sm hover:bg-oceano-800 focus-visible:ring-2 focus-visible:ring-agua-300"
+                [class.border-agua-300]="partida.embarcacaoAtiva() === modelo.nome"
+                [class.border-espuma-100/20]="partida.embarcacaoAtiva() !== modelo.nome"
+                [attr.aria-pressed]="partida.embarcacaoAtiva() === modelo.nome"
+                (click)="selecionar(modelo.nome)">
+                {{ modelo.rotulo }} · {{ modelo.tamanho }} células
+                @if (partida.frotaPreparacao().some(item => item.nome === modelo.nome)) { <span class="text-emerald-300">— posicionada</span> }
+                @else { <span class="text-espuma-100/60">— faltante</span> }
+              </button>
+              @if (partida.frotaPreparacao().some(item => item.nome === modelo.nome)) {
+                <button type="button" class="rounded px-2 py-2 text-sm text-red-200 hover:bg-red-950" [attr.aria-label]="'Remover ' + modelo.rotulo" (click)="remover(modelo.nome)">Remover</button>
+              }
+            </li>
+          }
+        </ul>
+        <p class="text-sm text-espuma-100/70">Faltantes: {{ partida.faltantes().length }}</p>
+      </section>
+
+      <section class="space-y-3" aria-labelledby="titulo-orientacao">
+        <h2 id="titulo-orientacao" class="text-lg font-semibold">Orientação</h2>
+        <p id="instrucao-orientacao" class="text-sm text-espuma-100/70">{{ partida.orientacao() === 'horizontal' ? 'Horizontal — pressione R ou use o botão para alternar para vertical.' : 'Vertical — pressione R ou use o botão para alternar para horizontal.' }}</p>
+        <button type="button" class="w-full rounded border border-agua-300 px-3 py-2 text-sm hover:bg-oceano-800 focus-visible:ring-2 focus-visible:ring-agua-300" aria-describedby="instrucao-orientacao" (click)="alternarOrientacao()">Alternar orientação (R)</button>
+      </section>
+      <button type="button" class="w-full rounded bg-agua-500 px-4 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" [disabled]="!partida.completa()" (click)="partida.iniciarBatalha()">Iniciar batalha</button>
+    </aside>
+  </div>
 </section>
