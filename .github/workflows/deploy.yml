@@ -1,0 +1,46 @@
+name: Deploy no GitHub Pages
+
+# Publica o site automaticamente a cada push na branch main
+on:
+  push:
+    branches:
+      - main
+
+# Concede permissão de escrita ao GITHUB_TOKEN para enviar o branch gh-pages
+permissions:
+  contents: write
+
+# Evita deploys simultâneos: cancela a execução anterior ainda em andamento
+concurrency:
+  group: deploy-github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Testar e publicar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Histórico completo: necessário para o push no branch gh-pages
+          fetch-depth: 0
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar testes
+        run: npm test -- --watch=false
+
+      # O angular.json já define baseHref, name e email do deploy
+      - name: Publicar com ng deploy
+        run: npx ng deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
