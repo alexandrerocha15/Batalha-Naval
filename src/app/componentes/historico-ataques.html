@@ -1,0 +1,15 @@
+<section aria-labelledby="historico-titulo" class="space-y-2">
+  <h2 id="historico-titulo" class="text-xl font-semibold">Histórico de ataques</h2>
+  @if (ataques().length) {
+    <div
+      class="max-h-64 overflow-y-auto rounded border border-oceano-700/60 p-2"
+      role="region"
+      aria-labelledby="historico-titulo"
+      tabindex="0"
+    >
+      <ul class="space-y-1" aria-live="polite">
+        @for (ataque of ataques(); track $index) { <li>{{ textoAtaque(ataque) }}</li> }
+      </ul>
+    </div>
+  } @else { <p>Nenhum ataque realizado.</p> }
+</section>

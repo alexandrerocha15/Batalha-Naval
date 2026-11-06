@@ -14,37 +14,10 @@
 
   @if (partida(); as jogo) {
     <div class="grid min-w-0 gap-6 lg:grid-cols-2">
-      <section aria-labelledby="tabuleiro-adversario" class="min-w-0 space-y-3">
-        <h2 id="tabuleiro-adversario" class="text-xl font-semibold">Frota adversária</h2>
-        <div class="grid grid-cols-10 gap-1" role="group" aria-label="Tabuleiro adversário, linhas A a J e colunas 1 a 10">
-          @for (c of coordenadas; track c.linha + '-' + c.coluna) {
-            <button type="button" class="aspect-square min-w-0 rounded-sm text-[clamp(0.5rem,2vw,0.8rem)] font-semibold focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-300 disabled:cursor-not-allowed" [class]="classe('computador', c)" [disabled]="!!ataque('computador', c) || jogo.turno !== 'jogador' || jogo.situacao !== 'em-andamento'" [attr.aria-label]="rotulo('computador', c)" (click)="atacar(c)">
-              @if (ataque('computador', c); as marcador) { {{ marcador.resultado === 'agua' ? '·' : '×' }} }
-            </button>
-          }
-        </div>
-      </section>
-
-      <section aria-labelledby="tabuleiro-jogador" class="min-w-0 space-y-3">
-        <h2 id="tabuleiro-jogador" class="text-xl font-semibold">Sua frota</h2>
-        <div class="grid grid-cols-10 gap-1" role="group" aria-label="Seu tabuleiro, linhas A a J e colunas 1 a 10">
-          @for (c of coordenadas; track c.linha + '-' + c.coluna) {
-            <div class="flex aspect-square min-w-0 items-center justify-center rounded-sm text-[clamp(0.5rem,2vw,0.8rem)] font-semibold" [class]="classe('jogador', c)" [attr.aria-label]="rotulo('jogador', c)" role="img">
-              @if (ataque('jogador', c); as marcador) { {{ marcador.resultado === 'agua' ? '·' : '×' }} }
-              @else if (protegido(c)) { ■ }
-            </div>
-          }
-        </div>
-      </section>
+      <app-tabuleiro-partida [partida]="jogo" lado="computador" (coordenadaAcionada)="atacar($event)" />
+      <app-tabuleiro-partida [partida]="jogo" lado="jogador" />
     </div>
 
-    <section aria-labelledby="historico-titulo" class="space-y-2">
-      <h2 id="historico-titulo" class="text-xl font-semibold">Histórico de ataques</h2>
-      @if (resultadoTurno().length) {
-        <ul class="space-y-1" aria-live="polite">
-          @for (ataque of jogo.ataques; track $index) { <li>{{ textoAtaque(ataque) }}</li> }
-        </ul>
-      } @else { <p>Nenhum ataque realizado.</p> }
-    </section>
+    <app-historico-ataques [ataques]="jogo.ataques" />
   }
 </section>

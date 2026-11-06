@@ -10,6 +10,14 @@ function aleatorioControlado() {
   };
 }
 
+function aleatorioDiferente() {
+  let semente = 987654;
+  return () => {
+    semente = (semente * 1664525 + 1013904223) % 4294967296;
+    return semente / 4294967296;
+  };
+}
+
 function prepararStore(store: PartidaStore, posicoes: (indice: number) => Coordenada): void {
   store.iniciarPartida();
   store.modelos.forEach((modelo, indice) => {
@@ -163,7 +171,7 @@ describe('PartidaStore', () => {
     expect(store.partida()?.turno).toBe('jogador');
   });
 
-  it('preserva vitória e histórico, mantém batalha e recusa ataques terminais', () => {
+  it('preserva vitória e histórico, transiciona para encerrada e recusa ataques terminais', () => {
     prepararStore(store, (indice) => ({ linha: indice + 5, coluna: 0 }));
     const celulasAdversarias = store.partida()!.frotaComputador.flatMap((embarcacao) =>
       Array.from({ length: embarcacao.tamanho }, (_, deslocamento) => ({
@@ -173,7 +181,7 @@ describe('PartidaStore', () => {
     );
     celulasAdversarias.forEach((coordenada) => store.atacarJogador(coordenada, () => 0));
     expect(store.partida()?.situacao).toBe('vitoria');
-    expect(store.fase()).toBe('batalha');
+    expect(store.fase()).toBe('encerrada');
     const partidaFinal = store.partida();
     expect(store.atacarJogador({ linha: 9, coluna: 9 })).toMatchObject({ aceito: false, motivo: 'partida-encerrada' });
     expect(store.partida()).toBe(partidaFinal);
@@ -202,9 +210,47 @@ describe('PartidaStore', () => {
       expect(store.atacarJogador(coordenada, () => 0)?.aceito).toBe(true);
     }
     expect(store.partida()?.situacao).toBe('derrota');
-    expect(store.fase()).toBe('batalha');
+    expect(store.fase()).toBe('encerrada');
     const partidaFinal = store.partida();
     expect(store.atacarJogador({ linha: 8, coluna: 9 })).toMatchObject({ aceito: false, motivo: 'partida-encerrada' });
     expect(store.partida()).toBe(partidaFinal);
+  });
+
+  it('novaPartida descarta o estado anterior e prepara nova batalha com frota nova e primeiro ataque do jogador', () => {
+    store.iniciarPartida();
+    store.modelos.forEach((modelo, indice) => {
+      store.selecionarEmbarcacao(modelo.nome);
+      store.posicionarAtiva({ linha: indice * 2, coluna: 0 });
+    });
+    store.selecionarEmbarcacao('destroyer');
+    store.alternarOrientacao();
+    expect(store.iniciarBatalha(aleatorioControlado())).toBe(true);
+    expect(store.frotaPreparacao()).toHaveLength(5);
+    const frotaAnterior = store.partida()!.frotaComputador;
+
+    store.novaPartida();
+
+    expect(store.fase()).toBe('preparacao');
+    expect(store.frotaPreparacao()).toEqual([]);
+    expect(store.embarcacaoAtiva()).toBeUndefined();
+    expect(store.orientacao()).toBe('horizontal');
+    expect(store.partida()).toBeUndefined();
+
+    store.modelos.forEach((modelo, indice) => {
+      store.selecionarEmbarcacao(modelo.nome);
+      expect(store.posicionarAtiva({ linha: indice * 2, coluna: 0 })).toBe(true);
+    });
+    expect(store.iniciarBatalha(aleatorioDiferente())).toBe(true);
+    const novaFrota = store.partida()!.frotaComputador;
+    expect(novaFrota).toHaveLength(5);
+    expect(novaFrota.map((embarcacao) => embarcacao.tamanho).sort()).toEqual([2, 3, 3, 4, 5]);
+    expect(novaFrota).not.toEqual(frotaAnterior);
+    expect(store.partida()!.ataques).toEqual([]);
+    expect(store.partida()!.turno).toBe('jogador');
+
+    const resultado = store.atacarJogador({ linha: 9, coluna: 9 }, () => 0);
+    expect(resultado?.aceito).toBe(true);
+    expect(store.partida()!.ataques).toHaveLength(2);
+    expect(store.partida()!.turno).toBe('jogador');
   });
 });

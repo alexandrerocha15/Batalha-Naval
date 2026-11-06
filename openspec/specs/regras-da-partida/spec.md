@@ -260,3 +260,112 @@ A tela SHALL manter o início da batalha indisponível enquanto houver embarcaç
 
 - **WHEN** todas as embarcações estão posicionadas validamente e o jogador inicia a batalha
 - **THEN** a fase muda para batalha e a preparação não pode mais ser alterada
+
+### Requirement: Tabuleiros de batalha visíveis
+
+A tela de batalha SHALL mostrar o tabuleiro do jogador com sua frota e os ataques recebidos, e o tabuleiro adversário com apenas os resultados dos ataques já realizados, sem revelar embarcações ainda não descobertas.
+
+#### Scenario: Início da batalha
+
+- **WHEN** a preparação termina e a batalha começa
+- **THEN** o jogador vê a própria frota, o tabuleiro adversário ainda sem embarcações reveladas e a indicação de que é seu turno
+
+#### Scenario: Ataques marcados nos tabuleiros
+
+- **WHEN** qualquer participante conclui um ataque válido
+- **THEN** a coordenada atacada, o resultado e o lado atingido ficam identificáveis no tabuleiro correspondente
+
+### Requirement: Ataque interativo do jogador
+
+Durante seu turno, o jogador SHALL poder escolher por mouse, toque ou teclado uma coordenada ainda não atacada no tabuleiro adversário; coordenadas indisponíveis SHALL ser identificadas e não SHALL consumir o turno.
+
+#### Scenario: Ataque válido por coordenada
+
+- **WHEN** o jogador aciona uma coordenada livre durante seu turno
+- **THEN** o resultado do ataque é exibido na coordenada e informado em texto acessível
+
+#### Scenario: Coordenada já atacada
+
+- **WHEN** o jogador tenta novamente uma coordenada já atacada
+- **THEN** nenhuma nova jogada ocorre e o histórico e o turno permanecem inalterados
+
+#### Scenario: Entrada fora do turno
+
+- **WHEN** o jogador tenta atacar enquanto é o turno do computador
+- **THEN** o ataque não é aceito e nenhum turno adicional é criado
+
+### Requirement: Resposta automática do computador na batalha
+
+Após um ataque válido do jogador que não encerre a partida, o computador SHALL atacar automaticamente uma coordenada livre do tabuleiro do jogador; o jogador SHALL conhecer o resultado antes de realizar um novo ataque.
+
+#### Scenario: Resposta após jogada válida
+
+- **WHEN** o jogador conclui um ataque válido sem vencer a partida
+- **THEN** o computador ataca uma coordenada ainda não atacada e o turno retorna ao jogador se a partida continuar
+
+#### Scenario: Jogada recusada não dispara resposta
+
+- **WHEN** o ataque do jogador é recusado
+- **THEN** o computador não realiza ataque e o histórico permanece inalterado
+
+#### Scenario: Vitória do jogador interrompe resposta
+
+- **WHEN** o ataque válido do jogador encerra a partida com vitória
+- **THEN** o computador não realiza novo ataque
+
+### Requirement: Feedback e conclusão na tela de batalha
+
+A tela de batalha SHALL indicar de quem é o turno e informar água, acerto ou destruição, incluindo o nome da embarcação destruída; ao terminar, SHALL encaminhar o jogador para a etapa de encerramento, sem aceitar novos ataques.
+
+#### Scenario: Resultado e turno compreensíveis
+
+- **WHEN** um ataque válido é concluído sem encerrar a partida
+- **THEN** seu resultado e o turno atual são comunicados em texto acessível, além das marcações visuais
+
+#### Scenario: Vitória ou derrota
+
+- **WHEN** a última embarcação de qualquer participante é destruída
+- **THEN** a etapa de encerramento é apresentada, onde o resultado é informado, o histórico permanece visível e nenhum ataque adicional é aceito
+
+#### Scenario: Layout estreito e teclado
+
+- **WHEN** a tela de batalha é usada em largura de 360 px ou somente com teclado
+- **THEN** ambos os tabuleiros permanecem utilizáveis sem rolagem horizontal e cada coordenada acionável possui foco visível e nome acessível
+
+### Requirement: Etapa de encerramento após a conclusão
+
+Quando a última embarcação de qualquer participante for destruída, a partida SHALL ser apresentada em uma etapa de encerramento distinta da batalha, preservando o resultado e o histórico e recusando qualquer novo ataque.
+
+#### Scenario: Transição imediata ao concluir
+
+- **WHEN** um ataque destrói a última embarcação de uma das frotas
+- **THEN** a partida passa a ser apresentada na etapa de encerramento, sem conceder outro ataque naquele turno
+
+#### Scenario: Estado terminal preservado
+
+- **WHEN** a etapa de encerramento está sendo apresentada
+- **THEN** o resultado, as frotas e o histórico permanecem exatamente como estavam no último ataque aceito
+
+#### Scenario: Tentativa de ataque após a conclusão
+
+- **WHEN** um ataque é solicitado depois da conclusão, por qualquer meio de interação
+- **THEN** ele é recusado e o resultado final permanece inalterado
+
+### Requirement: Reinício com novas frotas
+
+Iniciar uma nova partida SHALL descartar integralmente o estado anterior: a frota do jogador volta a estar vazia, o computador recebe uma nova frota válida, o histórico de ataques fica vazio e o primeiro ataque pertence ao jogador.
+
+#### Scenario: Nova partida após o encerramento
+
+- **WHEN** uma nova partida é iniciada a partir da etapa de encerramento
+- **THEN** nenhuma embarcação do jogador está posicionada, o histórico está vazio e a etapa de preparação é apresentada
+
+#### Scenario: Nova frota do computador
+
+- **WHEN** a nova partida chega à batalha
+- **THEN** a frota do computador contém as cinco embarcações, com os tamanhos corretos, dentro do tabuleiro e sem sobreposição
+
+#### Scenario: Turno inicial do jogador
+
+- **WHEN** a nova partida chega à batalha
+- **THEN** o primeiro ataque pertence ao jogador, como em qualquer partida iniciada pela primeira vez

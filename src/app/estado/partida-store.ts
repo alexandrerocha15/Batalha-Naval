@@ -69,16 +69,19 @@ export class PartidaStore {
 
   atacarJogador(coordenada: Coordenada, aleatorio: () => number = Math.random): ResultadoAtacar | undefined {
     const partida = this._partida();
-    if (this._fase() !== 'batalha' || !partida) return undefined;
+    if ((this._fase() !== 'batalha' && this._fase() !== 'encerrada') || !partida) return undefined;
     const resultado = atacar(partida, 'jogador', coordenada);
     if (!resultado.aceito) return resultado;
     if (resultado.partida.situacao !== 'em-andamento') {
       this._partida.set(resultado.partida);
+      this._fase.set('encerrada');
       return resultado;
     }
     const coordenadaComputador = escolherCoordenada(resultado.partida, 'jogador', aleatorio);
     const resposta = atacar(resultado.partida, 'computador', coordenadaComputador);
-    this._partida.set(resposta.aceito ? resposta.partida : resultado.partida);
+    const partidaAtualizada = resposta.aceito ? resposta.partida : resultado.partida;
+    this._partida.set(partidaAtualizada);
+    if (partidaAtualizada.situacao !== 'em-andamento') this._fase.set('encerrada');
     return resultado;
   }
 
@@ -88,5 +91,9 @@ export class PartidaStore {
     this._orientacao.set('horizontal');
     this._partida.set(undefined);
     this._fase.set('preparacao');
+  }
+
+  novaPartida(): void {
+    this.iniciarPartida();
   }
 }

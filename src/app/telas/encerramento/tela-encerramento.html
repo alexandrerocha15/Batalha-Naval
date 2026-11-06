@@ -1,7 +1,34 @@
-<section class="space-y-4">
-  <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Fim da partida</p>
-  <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Partida encerrada</h1>
-  <p class="max-w-xl text-base text-espuma-100/80">
-    O resultado e a opção de jogar novamente serão exibidos aqui.
-  </p>
+<section class="space-y-6" aria-labelledby="titulo-encerramento">
+  <header class="space-y-2">
+    <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Fim da partida</p>
+    <h1 id="titulo-encerramento" class="text-3xl font-semibold tracking-tight sm:text-4xl">Partida encerrada</h1>
+    @if (partida(); as jogo) {
+      <p class="text-lg font-semibold">
+        @if (jogo.situacao === 'vitoria') { Vitória! Sua frota venceu — a frota do computador foi destruída. }
+        @else { Derrota. A frota do computador venceu — a sua frota foi destruída. }
+      </p>
+      <p class="max-w-2xl text-base text-espuma-100/80">
+        A partida terminou. Nenhum ataque adicional é possível. Os tabuleiros e o histórico permanecem disponíveis para consulta.
+      </p>
+    }
+  </header>
+
+  @if (partida(); as jogo) {
+    <div class="grid min-w-0 gap-6 lg:grid-cols-2">
+      <app-tabuleiro-partida [partida]="jogo" lado="computador" [somenteLeitura]="true" />
+      <app-tabuleiro-partida [partida]="jogo" lado="jogador" [somenteLeitura]="true" />
+    </div>
+
+    <app-historico-ataques [ataques]="jogo.ataques" />
+
+    <div>
+      <button
+        type="button"
+        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-agua-400 px-5 py-3 text-sm font-semibold text-oceano-950 transition hover:bg-agua-400/90 active:bg-agua-400/80"
+        (click)="jogarNovamente()"
+      >
+        Jogar novamente
+      </button>
+    </div>
+  }
 </section>
