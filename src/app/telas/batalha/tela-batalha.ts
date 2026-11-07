@@ -1,7 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Coordenada } from '../../dominio/coordenada';
+import { HistoricoAtaques } from '../../componentes/historico-ataques';
+import { TabuleiroPartida } from '../../componentes/tabuleiro-partida';
+import { PartidaStore } from '../../estado/partida-store';
 
 @Component({
   selector: 'app-tela-batalha',
+  imports: [TabuleiroPartida, HistoricoAtaques],
   templateUrl: './tela-batalha.html',
 })
-export class TelaBatalha {}
+export class TelaBatalha {
+  protected readonly store = inject(PartidaStore);
+  protected readonly partida = this.store.partida;
+
+  atacar(c: Coordenada): void { this.store.atacarJogador(c); }
+}

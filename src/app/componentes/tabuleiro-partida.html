@@ -1,0 +1,16 @@
+<section [attr.aria-labelledby]="idTitulo()" class="min-w-0 space-y-3">
+  <h2 [id]="idTitulo()" class="text-xl font-semibold">{{ titulo() }}</h2>
+  <div class="grid grid-cols-10 gap-1" role="group" [attr.aria-label]="rotuloGrupo()">
+    @for (c of coordenadas; track c.linha + '-' + c.coluna) {
+      @if (lado() === 'computador') {
+        <button type="button" class="aspect-square min-w-0 rounded-sm text-[clamp(0.5rem,2vw,0.8rem)] font-semibold focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-300 disabled:cursor-not-allowed" [class]="classe(c)" [disabled]="desabilitada(c)" [attr.aria-label]="rotulo(c)" (click)="acionar(c)">
+          @if (marcador(c); as texto) { {{ texto }} }
+        </button>
+      } @else {
+        <div class="flex aspect-square min-w-0 items-center justify-center rounded-sm text-[clamp(0.5rem,2vw,0.8rem)] font-semibold" [class]="classe(c)" [attr.aria-label]="rotulo(c)" role="img">
+          @if (marcador(c); as texto) { {{ texto }} }
+        </div>
+      }
+    }
+  </div>
+</section>

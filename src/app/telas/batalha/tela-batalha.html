@@ -1,7 +1,23 @@
-<section class="space-y-4">
-  <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Etapa 2 de 2</p>
-  <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Batalha</h1>
-  <p class="max-w-xl text-base text-espuma-100/80">
-    A batalha começa depois que sua frota estiver posicionada.
-  </p>
+<section class="space-y-6" aria-labelledby="titulo-batalha">
+  <header class="space-y-2">
+    <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Etapa 2 de 2</p>
+    <h1 id="titulo-batalha" class="text-3xl font-semibold tracking-tight sm:text-4xl">Batalha</h1>
+    @if (partida(); as jogo) {
+      <p class="text-lg font-semibold" aria-live="polite">
+        @if (jogo.situacao === 'vitoria') { Vitória! Sua frota venceu. }
+        @else if (jogo.situacao === 'derrota') { Derrota. A frota do computador venceu. }
+        @else if (jogo.turno === 'jogador') { Seu turno. Escolha uma coordenada adversária. }
+        @else { Turno do computador. }
+      </p>
+    }
+  </header>
+
+  @if (partida(); as jogo) {
+    <div class="grid min-w-0 gap-6 lg:grid-cols-2">
+      <app-tabuleiro-partida [partida]="jogo" lado="computador" (coordenadaAcionada)="atacar($event)" />
+      <app-tabuleiro-partida [partida]="jogo" lado="jogador" />
+    </div>
+
+    <app-historico-ataques [ataques]="jogo.ataques" />
+  }
 </section>
