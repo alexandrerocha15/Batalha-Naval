@@ -8,7 +8,7 @@
       tabindex="0"
     >
       <ul class="space-y-1" aria-live="polite">
-        @for (ataque of ataques(); track $index) { <li>{{ textoAtaque(ataque) }}</li> }
+        @for (ataque of ataquesExibidos(); track $index) { <li>{{ textoAtaque(ataque) }}</li> }
       </ul>
     </div>
   } @else { <p>Nenhum ataque realizado.</p> }

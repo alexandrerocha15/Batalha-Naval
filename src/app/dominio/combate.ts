@@ -1,5 +1,5 @@
 import { chave, Coordenada, TAMANHO_TABULEIRO, validarCoordenada } from './coordenada';
-import { celulas } from './frota';
+import { celulas, FROTA_PADRAO, NomeEmbarcacao } from './frota';
 import { Ataque, Lado, Partida } from './partida';
 import { Frota } from './preparacao';
 
@@ -50,4 +50,22 @@ export function embarcacoesDestruidas(partida: Partida, alvo: Lado): readonly st
     if (ataque.resultado === 'destruicao' && ataque.embarcacao) destruicoes.add(ataque.embarcacao);
   }
   return [...destruicoes];
+}
+
+export interface SituacaoEmbarcacao {
+  readonly nome: NomeEmbarcacao;
+  readonly rotulo: string;
+  readonly total: number;
+  readonly restantes: number;
+}
+
+export function situacaoFrota(partida: Partida, alvo: Lado): readonly SituacaoEmbarcacao[] {
+  const frota = frotaDoAlvo(partida, alvo);
+  const ataquesDoAlvo = partida.ataques.filter((ataque) => ataque.alvo === alvo);
+  return FROTA_PADRAO.map((modelo) => {
+    const unidades = frota.filter((embarcacao) => embarcacao.nome === modelo.nome);
+    const restantes = unidades.filter((embarcacao) =>
+      !celulas(embarcacao).every((celula) => ataquesDoAlvo.some((ataque) => chave(ataque.coordenada) === chave(celula))));
+    return { nome: modelo.nome, rotulo: modelo.rotulo, total: unidades.length, restantes: restantes.length };
+  });
 }

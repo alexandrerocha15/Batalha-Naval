@@ -60,6 +60,47 @@ describe('TelaPreparacao', () => {
     fixture.destroy();
   });
 
+  it('oferece o botão Voltar com nome acessível, foco visível e retorno à apresentação', () => {
+    store.selecionarEmbarcacao('destroyer');
+    expect(store.posicionarAtiva({ linha: 0, coluna: 0 })).toBe(true);
+    const fixture = TestBed.createComponent(TelaPreparacao);
+    fixture.detectChanges();
+    const voltar = (Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[])
+      .find((botao) => botao.textContent?.trim() === 'Voltar');
+    expect(voltar).toBeTruthy();
+    expect(voltar!.type).toBe('button');
+    expect(voltar!.textContent).toContain('Voltar');
+    expect(voltar!.className).toContain('focus-visible:ring-2');
+    voltar!.focus();
+    expect(document.activeElement).toBe(voltar);
+    expect(store.fase()).toBe('preparacao');
+
+    voltar!.click();
+    fixture.detectChanges();
+
+    expect(store.fase()).toBe('apresentacao');
+    expect(store.frotaPreparacao()).toEqual([]);
+    expect(store.embarcacaoAtiva()).toBeUndefined();
+    fixture.destroy();
+  });
+
+  it('descarta a frota ao voltar e permite recomeçar com as embarcações faltantes', () => {
+    store.selecionarEmbarcacao('destroyer');
+    store.posicionarAtiva({ linha: 0, coluna: 0 });
+    const fixture = TestBed.createComponent(TelaPreparacao);
+    fixture.detectChanges();
+    (Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[])
+      .find((botao) => botao.textContent?.trim() === 'Voltar')!.click();
+
+    store.iniciarPartida();
+    fixture.detectChanges();
+
+    expect(store.fase()).toBe('preparacao');
+    expect(store.frotaPreparacao()).toEqual([]);
+    expect(fixture.nativeElement.textContent).toContain('Faltantes: 5');
+    fixture.destroy();
+  });
+
   it('avalia prévia, confirma origem válida e recusa posição fora do tabuleiro', () => {
     const fixture = TestBed.createComponent(TelaPreparacao);
     fixture.detectChanges();

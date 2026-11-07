@@ -1,9 +1,11 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
+import { LucideArrowLeft } from '@lucide/angular';
 import { chave, Coordenada } from '../../dominio/coordenada';
 import { celulas, NomeEmbarcacao } from '../../dominio/frota';
 import { PartidaStore } from '../../estado/partida-store';
 
 @Component({
+  imports: [LucideArrowLeft],
   selector: 'app-tela-preparacao',
   templateUrl: './tela-preparacao.html',
 })

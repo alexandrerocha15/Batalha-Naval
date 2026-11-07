@@ -14,10 +14,13 @@
 
   @if (partida(); as jogo) {
     <div class="grid min-w-0 gap-6 lg:grid-cols-2">
+      <div class="space-y-4">
+        <app-tabuleiro-partida [partida]="jogo" lado="jogador" />
+        <app-indicador-frota [partida]="jogo" />
+      </div>
       <app-tabuleiro-partida [partida]="jogo" lado="computador" (coordenadaAcionada)="atacar($event)" />
-      <app-tabuleiro-partida [partida]="jogo" lado="jogador" />
     </div>
 
-    <app-historico-ataques [ataques]="jogo.ataques" />
+    <app-historico-ataques [ataques]="jogo.ataques" [reduzido]="true" />
   }
 </section>

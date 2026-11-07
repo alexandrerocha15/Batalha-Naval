@@ -253,4 +253,40 @@ describe('PartidaStore', () => {
     expect(store.partida()!.ataques).toHaveLength(2);
     expect(store.partida()!.turno).toBe('jogador');
   });
+
+  it('voltarApresentacao volta à apresentação descartando a preparação', () => {
+    store.iniciarPartida();
+    store.selecionarEmbarcacao('destroyer');
+    store.alternarOrientacao();
+    expect(store.posicionarAtiva({ linha: 0, coluna: 0 })).toBe(true);
+    expect(store.voltarApresentacao()).toBe(true);
+
+    expect(store.fase()).toBe('apresentacao');
+    expect(store.frotaPreparacao()).toEqual([]);
+    expect(store.embarcacaoAtiva()).toBeUndefined();
+    expect(store.orientacao()).toBe('horizontal');
+    expect(store.partida()).toBeUndefined();
+  });
+
+  it('voltarApresentacao não tem efeito fora da preparação', () => {
+    prepararStore(store, (indice) => ({ linha: indice + 5, coluna: 0 }));
+    const partida = store.partida();
+
+    expect(store.voltarApresentacao()).toBe(false);
+    expect(store.fase()).toBe('batalha');
+    expect(store.partida()).toBe(partida);
+
+    const celulasAdversarias = store.partida()!.frotaComputador.flatMap((embarcacao) =>
+      Array.from({ length: embarcacao.tamanho }, (_, deslocamento) => ({
+        linha: embarcacao.origem.linha + (embarcacao.orientacao === 'vertical' ? deslocamento : 0),
+        coluna: embarcacao.origem.coluna + (embarcacao.orientacao === 'horizontal' ? deslocamento : 0),
+      })),
+    );
+    celulasAdversarias.forEach((coordenada) => store.atacarJogador(coordenada, () => 0));
+    expect(store.fase()).toBe('encerrada');
+    const partidaEncerrada = store.partida();
+    expect(store.voltarApresentacao()).toBe(false);
+    expect(store.fase()).toBe('encerrada');
+    expect(store.partida()).toBe(partidaEncerrada);
+  });
 });

@@ -86,14 +86,25 @@ export class PartidaStore {
   }
 
   iniciarPartida(): void {
-    this._frotaPreparacao.set([]);
-    this._embarcacaoAtiva.set(undefined);
-    this._orientacao.set('horizontal');
-    this._partida.set(undefined);
+    this.limparPreparacao();
     this._fase.set('preparacao');
+  }
+
+  voltarApresentacao(): boolean {
+    if (this._fase() !== 'preparacao') return false;
+    this.limparPreparacao();
+    this._fase.set('apresentacao');
+    return true;
   }
 
   novaPartida(): void {
     this.iniciarPartida();
+  }
+
+  private limparPreparacao(): void {
+    this._frotaPreparacao.set([]);
+    this._embarcacaoAtiva.set(undefined);
+    this._orientacao.set('horizontal');
+    this._partida.set(undefined);
   }
 }

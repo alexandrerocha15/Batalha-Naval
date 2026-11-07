@@ -15,8 +15,8 @@
 
   @if (partida(); as jogo) {
     <div class="grid min-w-0 gap-6 lg:grid-cols-2">
-      <app-tabuleiro-partida [partida]="jogo" lado="computador" [somenteLeitura]="true" />
       <app-tabuleiro-partida [partida]="jogo" lado="jogador" [somenteLeitura]="true" />
+      <app-tabuleiro-partida [partida]="jogo" lado="computador" [somenteLeitura]="true" />
     </div>
 
     <app-historico-ataques [ataques]="jogo.ataques" />

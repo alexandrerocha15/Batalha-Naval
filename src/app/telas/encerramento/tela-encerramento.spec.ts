@@ -79,7 +79,10 @@ describe('TelaEncerramento', () => {
     expect(texto).toContain('Nenhum ataque adicional é possível');
     expect(fixture.nativeElement.querySelectorAll('[role="group"]')).toHaveLength(2);
     expect(fixture.nativeElement.querySelectorAll('ul li')).toHaveLength(totalAtaques);
-    expect(texto).toContain('Seu ataque em adversário');
+    expect(totalAtaques).toBeGreaterThan(2);
+    expect(texto).toContain('Seu ataque em');
+    expect(texto).not.toContain('em adversário');
+    expect(texto).toContain('destruição — ');
     expect(texto).toContain('Jogar novamente');
     fixture.destroy();
   });
@@ -95,6 +98,21 @@ describe('TelaEncerramento', () => {
     expect(texto).toContain('Nenhum ataque adicional é possível');
     expect(fixture.nativeElement.querySelectorAll('[role="group"]')).toHaveLength(2);
     expect(fixture.nativeElement.querySelectorAll('ul li')).toHaveLength(totalAtaques);
+    fixture.destroy();
+  });
+
+  it('renderiza primeiro o tabuleiro do jogador e depois o adversário, sem coordenadas acionáveis', () => {
+    encerrarComVitoria();
+    const fixture = TestBed.createComponent(TelaEncerramento);
+    fixture.detectChanges();
+    const grupos = fixture.nativeElement.querySelectorAll('[role="group"]');
+    expect(grupos).toHaveLength(2);
+    expect(grupos[0].getAttribute('aria-label')).toContain('Seu tabuleiro');
+    expect(grupos[1].getAttribute('aria-label')).toContain('Tabuleiro adversário');
+    expect(grupos[0].querySelectorAll('button')).toHaveLength(0);
+    const botoes = [...grupos[1].querySelectorAll('button')] as HTMLButtonElement[];
+    expect(botoes).toHaveLength(100);
+    expect(botoes.every((botao) => botao.disabled)).toBe(true);
     fixture.destroy();
   });
 

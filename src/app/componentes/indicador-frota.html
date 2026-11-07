@@ -1,0 +1,33 @@
+<section aria-labelledby="titulo-indicador-frota" class="space-y-2">
+  <h2 id="titulo-indicador-frota" class="text-lg font-semibold">Situação da frota</h2>
+  <ul class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+    @for (item of situacao(); track item.nome) {
+      <li
+        class="flex min-w-0 items-center gap-2 rounded border border-espuma-100/20 px-2 py-2"
+        [attr.aria-label]="item.rotulo + ': ' + item.restantes + ' de ' + item.total + ' restantes'"
+      >
+        @switch (item.nome) {
+          @case ('porta-avioes') {
+            <svg lucidePlane aria-hidden="true" class="size-4 shrink-0 text-agua-400"></svg>
+          }
+          @case ('encouracado') {
+            <svg lucideShield aria-hidden="true" class="size-4 shrink-0 text-agua-400"></svg>
+          }
+          @case ('cruzador') {
+            <svg lucideShip aria-hidden="true" class="size-4 shrink-0 text-agua-400"></svg>
+          }
+          @case ('submarino') {
+            <svg lucideFish aria-hidden="true" class="size-4 shrink-0 text-agua-400"></svg>
+          }
+          @case ('destroyer') {
+            <svg lucideZap aria-hidden="true" class="size-4 shrink-0 text-agua-400"></svg>
+          }
+        }
+        <span class="min-w-0 flex-1 break-words">
+          <span class="block text-sm font-medium">{{ item.rotulo }}</span>
+          <span class="block text-xs text-espuma-100/70">{{ item.restantes }}/{{ item.total }} restantes</span>
+        </span>
+      </li>
+    }
+  </ul>
+</section>

@@ -3,6 +3,14 @@
     <p class="text-xs font-medium tracking-[0.25em] text-agua-400 uppercase">Etapa 1 de 2</p>
     <h1 id="titulo-preparacao" class="text-3xl font-semibold tracking-tight sm:text-4xl">Prepare sua frota</h1>
     <p class="max-w-xl text-base text-espuma-100/80">Selecione uma embarcação e escolha uma célula para posicioná-la.</p>
+    <button
+      type="button"
+      class="inline-flex items-center gap-2 rounded border border-espuma-100/30 px-3 py-2 text-sm text-espuma-100 hover:bg-oceano-800 focus-visible:ring-2 focus-visible:ring-agua-300"
+      (click)="partida.voltarApresentacao()"
+    >
+      <svg lucideArrowLeft aria-hidden="true" class="size-4"></svg>
+      Voltar
+    </button>
   </header>
 
   <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">

@@ -27,7 +27,7 @@ Ao final de uma partida, a tela de encerramento SHALL informar em português se 
 
 ### Requirement: Consulta da partida encerrada
 
-A tela de encerramento SHALL manter disponíveis, para consulta, os dois tabuleiros com as marcações da partida e o histórico completo de ataques, sem permitir novas jogadas.
+A tela de encerramento SHALL manter disponíveis, para consulta, os dois tabuleiros com as marcações da partida e o histórico completo de ataques, sem permitir novas jogadas. Em telas largas, o tabuleiro do jogador SHALL ficar à esquerda e o tabuleiro adversário à direita; em telas estreitas, o tabuleiro do jogador SHALL aparecer primeiro na ordem de leitura.
 
 #### Scenario: Tabuleiros preservados
 
@@ -43,6 +43,11 @@ A tela de encerramento SHALL manter disponíveis, para consulta, os dois tabulei
 
 - **WHEN** o jogador interage com as coordenadas na tela de encerramento
 - **THEN** nenhum ataque é realizado e o resultado permanece inalterado
+
+#### Scenario: Ordem dos tabuleiros
+
+- **WHEN** a tela de encerramento é exibida em largura de desktop
+- **THEN** o tabuleiro do jogador aparece à esquerda e o tabuleiro adversário à direita, sem alterar as marcações da partida
 
 ### Requirement: Ação de jogar novamente
 
